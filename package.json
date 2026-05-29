@@ -1,0 +1,30 @@
+{
+  "name": "simnearby",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Record a city video and generate interactive 3D what-if urban planning scenarios with VR",
+  "workspaces": [
+    "src/client",
+    "src/server"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "npm run dev --workspace=src/client",
+    "dev:server": "npm run dev --workspace=src/server",
+    "build": "npm run build --workspaces",
+    "test": "npm run test:client && npm run test:server",
+    "test:client": "npm run test --workspace=src/client",
+    "test:server": "npm run test --workspace=src/server",
+    "lint": "eslint 'src/**/*.{ts,tsx}' --max-warnings 0",
+    "typecheck": "tsc --noEmit --project src/client/tsconfig.json && tsc --noEmit --project src/server/tsconfig.json"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "concurrently": "^8.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.4.0"
+  }
+}

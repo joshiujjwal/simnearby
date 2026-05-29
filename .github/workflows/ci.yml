@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-js:
+    name: JS/TS — lint, typecheck, test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+
+  test-python:
+    name: Python — lint, type-check, test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install Python deps
+        run: |
+          cd src/reconstruction
+          pip install -r requirements.txt
+      - name: Lint (ruff)
+        run: ruff check src/reconstruction tests/reconstruction
+      - name: Type-check (mypy)
+        run: mypy src/reconstruction
+      - name: Run tests (pytest)
+        run: pytest tests/reconstruction/ -v --tb=short

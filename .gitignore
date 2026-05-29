@@ -1,0 +1,76 @@
+# Node / npm
+node_modules/
+dist/
+build/
+.next/
+out/
+.cache/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+.venv/
+venv/
+env/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+*.cover
+
+# Reconstruction artifacts
+*.ply
+*.glb
+*.splat
+colmap_output/
+reconstruction_cache/
+frames_tmp/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains
+.idea/
+*.iml
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+logs/
+*.log
+
+# Test output
+coverage/
+test-results/
+playwright-report/
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
