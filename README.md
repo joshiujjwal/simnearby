@@ -119,3 +119,25 @@ simnearby/
 6. Small, focused PRs only — one concern per PR
 
 > No evidence = no merge. This keeps the feedback loop tight and the codebase honest.
+
+## 🚀 Improvement Proposals
+
+### First-Principles Analysis
+- **NeRF/Gaussian Splatting is compute-intensive by nature**: Reconstructing a 3D scene from video frames is an inverse rendering problem that takes minutes-to-hours on GPU hardware; the architecture must treat reconstruction as an async background job, not a synchronous API call — the current worker design is correct but must be made failure-tolerant.
+- **Urban planning as the primary use case creates a paradox**: Meaningful "what-if" scenarios require accurate base geometry, but accurate geometry requires high-quality input video with controlled overlap, lighting, and GPS; casual city walkers won't produce reconstruction-grade footage without guidance.
+- **Three.js WebXR is the right layer, but 3D model file size is the critical bottleneck**: A street-level NeRF scene can produce meshes in the hundreds of megabytes; streaming and progressive loading strategy determines whether VR mode is usable on commodity hardware or only on high-end rigs.
+- **"Scenario sharing via URL" implies a content delivery problem**: Shareable scenarios require the 3D assets to be hosted, versioned, and served globally at acceptable latency — S3 alone is not a CDN strategy.
+
+### Key Risks & Assumptions
+- **Assumes users have reconstruction-quality video**: Handheld smartphone video with motion blur, occlusion, and inconsistent frame overlap frequently fails NeRF pipelines outright; without guided capture (overlay, checklist), the tool will produce poor 3D models for most users.
+- **GPU dependency for reconstruction is a cost and latency cliff**: Every reconstruction job requires GPU compute; this is expensive at scale and creates queue depth problems during peak usage without a cost-control mechanism.
+- **Urban planning regulations vary by jurisdiction**: A "what-if" showing a new high-rise may be useful for public discourse but legally ambiguous for professional planning submissions — the use case scope needs boundaries.
+- **WebXR adoption remains low**: Most users accessing via a browser will not have a VR headset; the desktop 3D viewer must be excellent as the primary experience, not a fallback.
+
+### Concrete Improvement Ideas
+- **Build a guided video capture mode** — an in-browser or mobile UI that overlays coverage indicators, optimal walking paths, and frame-quality feedback during capture; this is the single highest-leverage improvement because it directly determines reconstruction quality.
+- **Implement progressive mesh streaming** — export scenes as tiled 3D (3D Tiles / glTF LOD) and stream detail progressively based on camera proximity; this makes large scenes feasible on consumer hardware and in mobile browsers.
+- **Add a pre-reconstruction quality gate** — analyze uploaded frames for blur, coverage gaps, and GPS consistency before queuing GPU work; reject or warn on low-quality inputs to avoid wasted compute and user frustration.
+- **Create scenario diff visualization** — a split-view or overlay mode comparing original reconstruction to modified scenario; this is the "before/after" that makes what-if planning genuinely legible to non-technical stakeholders.
+- **Integrate OSM (OpenStreetMap) data as default base layer** — pre-populate building footprints, road layouts, and zoning data from OSM for known locations; users can then focus on modifying specific elements rather than building scenes from scratch.
+- **Define a cost-control policy for GPU jobs** — implement per-user job quotas, estimated cost display before queuing, and automatic downsampling for free tier users; without this, a viral spike produces unbounded infrastructure cost.
